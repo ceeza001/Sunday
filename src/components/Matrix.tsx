@@ -1,23 +1,25 @@
 import { useEffect, useRef } from "react";
 
-const Matrix = () => {
-  const canvasRef = useRef(null);
+const Matrix: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
+    if (!canvasRef.current) return;
+
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
     let columns = Math.floor(width / 10);
     const targetWord = "Ceeza";
     const charArray = targetWord.split("");
-    let drops = [];
+    let drops: number[] = [];
 
     for (let i = 0; i < columns; i++) {
       drops[i] = 1;
     }
 
-    const colors = ["#FD1502", "#FD1500"]; // Add your specific colors here
+    const colors = ["#FD1502", "#FD1500"];
     let frameRate = 25;
     let lastFrameTime = Date.now();
 
@@ -29,7 +31,6 @@ const Matrix = () => {
         const charIndex = (i * 3) % targetWord.length;
         const text = charArray[charIndex];
 
-        // Use the specific colors with the first color being dominant
         const color = i === 0 ? colors[0] : colors[Math.floor(Math.random() * (colors.length - 1)) + 1];
         ctx.fillStyle = color;
 
