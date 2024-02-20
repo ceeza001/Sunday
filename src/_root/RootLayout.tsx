@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 
 import { Topbar } from "@/components/";
 import { Button } from "@/components/ui/button";
-import sakura from "/assets/sakura.mp3";
+import sakura from "../../assets/sakura.mp3";
 
 const RootLayout = () => {
   const audioRef = useRef(new Audio(sakura));
