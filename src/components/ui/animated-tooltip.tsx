@@ -9,30 +9,29 @@ import {
 } from "framer-motion";
 
 interface AnimatedTooltipProps {
-    onButtonClick: () => void;
-}
-
-export const AnimatedTooltip: React.FC<AnimatedTooltipProps> = ({
-  items,
-  onButtonClick
-}: {
   items: {
     id: number;
     designation: string;
     image: string;
   }[];
+  onButtonClick: () => void;
+}
+
+export const AnimatedTooltip: React.FC<AnimatedTooltipProps> = ({
+  items,
+  onButtonClick
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(1);
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setHoveredIndex(null);
     }, 4000);
 
-      // Cleanup the timer if the component is unmounted
+    // Cleanup the timer if the component is unmounted
     return () => clearTimeout(timer);
-    }, []);
-  
+  }, []);
+
   const springConfig = { stiffness: 100, damping: 5 };
   const x = useMotionValue(0); // going to set this value on mouse move
   // rotate the tooltip
@@ -52,7 +51,7 @@ export const AnimatedTooltip: React.FC<AnimatedTooltipProps> = ({
 
   return (
     <>
-      {items.map((item, idx) => (
+      {items.map((item) => (
         <div
           className="relative group"
           key={item.id}
@@ -77,13 +76,13 @@ export const AnimatedTooltip: React.FC<AnimatedTooltipProps> = ({
                 style={{
                   translateX: translateX,
                   rotate: rotate,
-                  whiteSpace: "wrap",
+                  whiteSpace: "nowrap", // Use "nowrap" instead of "wrap"
                 }}
                 className="w-[15rem] absolute top-16 right-0 translate-x-1/2 text-xs flex text-center rounded-md bg-black z-50 shadow-xl px-4 py-2"
               >
                 <div className="absolute right-0 z-30 w-[20%] -top-px bg-gradient-to-r from-transparent via-emerald-500 to-transparent h-px " />
                 <div className="absolute left-0 w-[100%] z-30 -top-px bg-gradient-to-r from-transparent via-primary-500 to-transparent h-px " />
-                
+
                 <p className="text-white text-xs">{item.designation}</p>
               </motion.div>
             )}
@@ -94,7 +93,6 @@ export const AnimatedTooltip: React.FC<AnimatedTooltipProps> = ({
               height={100}
               width={100}
               src={item.image}
-              alt={item.name}
               className="invert-white object-cover !m-0 !p-0 object-top rounded-full h-[1.5rem] w-[1.5rem] group-hover:scale-105 group-hover:z-30 relative transition duration-500"
             />
           </button>
