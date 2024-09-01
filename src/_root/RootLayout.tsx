@@ -1,76 +1,91 @@
-import { useEffect, useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion"
 
+import { getFormattedDateTime } from '@/lib/utils';
+import { Button } from "@/components/ui/moving-border";
+import { AuroraBackground } from "@/components/ui/aurora-background";
+
+import { AudioPlayer } from "@/components/shared";
 import { Topbar } from "@/components/";
-import { Button } from "@/components/ui/button";
-import sakura from "../assets/sakura.mp3";
 
 const RootLayout = () => {
-  const audioRef = useRef(new Audio(sakura));
-  audioRef.current.volume = 0.003;
-  audioRef.current.loop = true;
-
   const [intro, setIntro] = useState(true);
+  const [currentDateTime, setCurrentDateTime] = useState<string>(getFormattedDateTime());
   const [isPlayingMusic, setIsPlayingMusic] = useState(false);
-
+  
   useEffect(() => {
-    if (isPlayingMusic) {
-      audioRef.current.play();
-    } else {
-      audioRef.current.pause();
-    }
+    const intervalId = setInterval(() => {
+      setCurrentDateTime(getFormattedDateTime());
+    }, 1000);
 
-    return () => {
-      audioRef.current.pause();
-    };
-  }, [isPlayingMusic]);
-
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+  
   const enter = () => {
-    setIsPlayingMusic(!isPlayingMusic);
+    if (!isPlayingMusic) {
+      setIsPlayingMusic(true);
+    }
     setIntro(false);
   };
   
   return (
-    <>
+    <div className="w-full">
       {intro ? (
-        <div className="w-full h-[92vh] flex flex-col flex-center">
-          <div className="mx-auto p-[1rem] w-full max-w-5xl">
-            <h1 className="text-[56px] font-bold leading-[101%]">I AM HIM, CEEZA</h1>
-            <p className="mt-8 text-[16px] md:text-[20px] font-semibold">The digital artisan who blurs the lines between syntax and stanzas, crafting an immersive experience in every web creation. A Full Stack Web Developer and poet, conjuring the magic where algorithms meet the eloquence of words.</p>
-          </div>
-          <div className="w-full mx-auto max-w-5xl p-[1rem]">
-            <Button
-              onClick={enter}
-              className="body-bold mt-6 cursor-pointer border border-primary-600"
-            >
-              Enter my world
-              <motion.span
-                animate={{
-                  x: [0, 10, 0],
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  repeatType: "loop",
-                }}
-              >
-                <img
-                  src="/assets/icons/enter.svg"
-                  alt="enter"
-                  className="w-[2rem]"
-                  />
-              </motion.span>
-            </Button>
-          </div>
+        <div className="bg-[#55CFFF] fixed top-0 left-0 w-screen h-full z-[200]">
+        
+          <AuroraBackground>
+            <header className="w-full p-[1rem] flex justify-between items-center fixed top-0 h-[4rem]">
+              <h3 className="text-[11px] font-black playwrite">{currentDateTime}</h3>
+          
+              <AudioPlayer isPlaying={isPlayingMusic} />
+            </header>
+        
+            <div className="relative w-full h-[80vh] flex flex-col flex-center">
+          
+              <div className="absolute md:static bottom-0 flex-center flex-col h-full">
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 0.3,
+                    duration: 0.8,
+                    ease: "easeInOut",
+                  }}
+                  className="mx-auto p-[1rem] w-full h-full max-w-5xl flex-col flex-center text-center"
+                >
+                  <h1 className="text-[66px] font-bold leading-[101%] spicy-rice">What's Cooking?</h1>
+                  
+                </motion.div>
+                <motion.button
+                  initial={{ opacity: 0.0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 0.55,
+                    duration: 0.85,
+                    ease: "easeInOut",
+                  }}
+                  onClick={enter}
+                  className="rounded-lg w-[20rem] bg-[#EFE27C] border-4 border-[#C49027] mx-auto max-w-5xl p-[3px]"
+                >
+                  <div
+                    className="rounded-[4px] bg-[#C49027] w-full text-[#FFE5B0] p-4 font-bold text-[20px] spicy-rice"
+                  >
+                    Let's Find Out
+                  </div>
+                </motion.button>
+              </div>
+            </div>
+          </AuroraBackground>
         </div>
       ) : (
-        <div className="w-full">
+        <>
           <Topbar />
           <Outlet />
-        </div>
+        </>
       )}
-    </>
+    </div>
   );
 };
 
