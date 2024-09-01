@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion"
 
 import { getFormattedDateTime } from '@/lib/utils';
-import { Button } from "@/components/ui/moving-border";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 
 import { AudioPlayer } from "@/components/shared";
